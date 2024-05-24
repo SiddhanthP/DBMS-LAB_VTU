@@ -1,0 +1,49 @@
+#PROGRAM-5
+
+#Query1:
+SELECT DISTINCT PNo
+FROM PROJECT
+JOIN WORKS_ON USING PNo
+JOIN EMPLOYEE USING SSN
+WHERE Name LIKE '%Scott'	
+UNION
+SELECT DISTINCT PNo
+	FROM PROJECT
+		JOIN DEPARTMENT USING DNo
+		JOIN EMPLOYEE ON DEPARTMENT.MgrSSN = EMPLOYEE.SSN
+	WHERE Name LIKE '%Scott';
+
+
+#Query2:
+	SELECT name, 1.1*salary AS INCR_SAL
+	FROM Employee
+		JOIN Works_On USING SSN
+		JOIN Project USING PNo
+	WHERE PName='IoT';
+
+#Query3:
+	SELECT SUM(salary), MAX(salary), MIN(salary), AVG(salary)
+	FROM Employee
+		NATURAL JOIN Department
+	WHERE DName='Accounts';
+
+#Query4:
+	SELECT name
+	FROM Employee E
+	WHERE NOT EXISTS
+		(SELECT PNo
+		 FROM Project
+		 WHERE DNo='5'
+			AND PNo NOT IN (SELECT PNo
+					FROM Works_On
+					WHERE E.SSN=SSN))
+
+#Query5:
+	SELECT DNo, COUNT(*) AS No_of_Employees
+	FROM Employee
+	WHERE salary > 600000
+		AND DNo IN (SELECT DNo
+			    FROM Employee
+			    GROUP BY DNo
+			    HAVING COUNT(*) > 5)
+	GROUP BY DNo;
